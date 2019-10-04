@@ -1,10 +1,11 @@
 import math
 import random
+import json
 
 class Connection:
-  def __init__(self, weight):
+  def __init__(self, weight, deltaWeight = 0):
     self.weight = weight
-    self.deltaWeight = 0
+    self.deltaWeight = deltaWeight
 
 
 class Neuron:
@@ -53,7 +54,12 @@ class Neuron:
 
 
 class NeuralNetwork:
-  def __init__(self, structure):
+  def __init__(self, structure = []):
+    if structure == []:
+      return;
+    self.setStructure(structure)
+
+  def setStructure(self, structure):
     self.layers = []
     self.avgError = 0
     self.avgSmoothingFactor = 100
@@ -104,6 +110,31 @@ class NeuralNetwork:
     for layerNum in reversed(range(1, len(self.layers))):
       for n in range(len(self.layers[layerNum]) - 1):
         self.layers[layerNum][n].updateWeights(self.layers[layerNum - 1])
+
+  def saveModel(self, path):
+    model = {
+      "structure": [],
+      "model": []
+    }
+    for layer in range(len(self.layers)):
+      model["structure"].append(len(self.layers[layer])-1)
+      model["model"].append([])
+      for neuron in range(len(self.layers[layer])):
+        model["model"][layer].append([])
+        for conn in self.layers[layer][neuron].outputWeights:
+          model["model"][layer][neuron].append({
+            "weight": conn.weight,
+            "deltaWeight": conn.deltaWeight
+          })
+    json.dump(model, open(path, "w"))
+
+  def loadModel(self, path):
+    model = json.load(open(path))
+    self.setStructure(model["structure"])
+    for layer in range(len(model["model"])):
+      for neuron in range(len(model["model"][layer])):
+        self.layers[layer][neuron].outputWeights.clear()
+        self.layers[layer][neuron].outputWeights = [Connection(conn["weight"], conn["deltaWeight"]) for conn in model["model"][layer][neuron]]
 
   def getResults(self):
     result = []
