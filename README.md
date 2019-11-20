@@ -1,5 +1,5 @@
 # About
-This is simple forward propagation network to recognize drawn numbers for learning purposes
+This is simple forward propagation neural network to recognize drawn numbers for learning purposes
 
 ## How to run
 Clone this repo:
