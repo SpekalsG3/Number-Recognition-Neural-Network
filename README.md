@@ -6,6 +6,6 @@ Clone this repo:
 
 > git clone https://github.com/SpekalsG3/Number-Recognition-Neural-Network.git
 
-go to created folder and run project:
+go to created folder/src/ and run main.py:
 
-> python paint.py
+> main.py
